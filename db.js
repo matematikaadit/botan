@@ -1,7 +1,7 @@
 const loki = require('lokijs');
 const Promise = require('bluebird');
 
-const db = new loki('.data/botan.db');
+const db = new loki('botan.db');
 
 const pdb = new Promise(function(resolve, reject) {
   let facts, stars, last_message;
