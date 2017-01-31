@@ -1,0 +1,43 @@
+pre {
+    padding: 14px;
+}
+pre, code {
+    background-color: #F5F5F5;
+}
+pre > code {
+  border-right: none;
+  border-left: none;
+}
+h1 {
+  color: #191970;
+  padding-bottom: 14px;
+  margin-bottom: 25px;
+  border-bottom: 2px dashed;
+}
+a {
+  color: #00E;
+}
+a:visited {
+  color: #551A8B;
+}
+.mono {
+  font-family: Consolas,"Lucida Console",Monaco,monospace;
+}
+table {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+.fact, .content {
+  box-sizing: border-box;
+}
+.fact {
+  width: 25%;
+}
+.content {
+  width: 75%;
+}
+td {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
