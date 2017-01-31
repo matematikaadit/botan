@@ -1,7 +1,6 @@
 const ping = require('./ping');
 const env = require('./env');
 const request = require('request');
-const fs = require('fs');
 
 const website = require('./website');
 website.start();
