@@ -15,7 +15,7 @@
 		"js-base64": "^2.1.9",
 		"express-remarkable": "^0.3.0",
 		"pug": "^0.1.0",
-		"lokijs": "1.4.2",
+		"lokijs": "git://github.com/techfort/LokiJS.git#c5a4358",
 		"hbs": "^4.0.1",
 		"bluebird": "^3.4.7",
 		"moment": "^2.17.1"
