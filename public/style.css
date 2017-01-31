@@ -27,15 +27,16 @@ table {
   display: table;
   table-layout: fixed;
   width: 100%;
+  white-space: pre-wrap;
 }
 .fact, .content {
   box-sizing: border-box;
 }
-.fact {
-  width: 25%;
+.fact, .nick {
+  width: 30%;
 }
-.content {
-  width: 75%;
+.content, .star {
+  width: 70%;
 }
 td {
   overflow-wrap: break-word;
