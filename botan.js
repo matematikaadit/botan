@@ -6,6 +6,12 @@ const request = require('request');
 
 const tracked_channels = env.TRACKED.split(' ');
 
+const sub = new RegExp('^s\/([^/]+)\/([^/]*)\/(g|i|gi|ig)? *$');
+
+function escape_re(str) {
+  return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&"); // http://stackoverflow.com/a/2593661
+}
+
 let facts, stars, last_message, db;
 pdb.then(function({ db: db_db, facts: db_facts, stars: db_stars, last_message: db_last_message }) {
   facts = db_facts;
@@ -85,25 +91,12 @@ botan.respond('channel', [ /^\.bintang +(\S+)/, /^([^\s+]+)\+\+( +|$)/ ], functi
   });
 });
 
-botan.respond('channel', /^(.*)$/, function(channel, message) {
-  if (tracked_channels.indexOf(channel.name) >= 0) {
-    const time = Date.now();
-    const nick = channel.message.source.nick;
-    const current = last_message.findOne({ nick: nick });
-    if (current) {
-      current.time = time;
-      current.message = message;
-      last_message.update(current);
-    } else {
-      last_message.insert({ nick: nick, time: time, message: message });
-    }
-    db.saveDatabase();
-  }
-});
-
-botan.respond('channel', /^\.kelihatan +(\S+)/, function(channel, nick) {
+botan.respond('channel', /^\.kelih?atan +(\S+)/, function(channel, nick) {
   const current = last_message.findOne({ nick: nick });
-  if (current) {
+  let sender = channel.message.source.nick;
+  if (nick === sender) {
+    channel.privmsg(`${nick}: coba cek di cermin`)
+  } else if (current) {
     channel.privmsg(`kelihatan: [${time.format(current.time)}] <${nick}> ${current.message}`);
   } else {
     channel.privmsg('gak kelihatan');
@@ -130,6 +123,37 @@ botan.respond('channel', [ /youtu\.be\/([\w-]+)/, /youtube\.com\/watch\?v=([\w-]
   });
 });
 
+botan.respond('channel', sub, function(channel, pat, subt, opt) {
+  const pattern = escape_re(pat || '');
+  const replacement = subt || '';
+  const flags = opt || '';
+  
+  const regex = new RegExp(pattern, flags);
+  const nick = channel.message.source.nick;
+
+  const current = last_message.findOne({ nick: nick });
+  if (current) {
+    const result = current.message.replace(regex, replacement);
+    channel.privmsg(`${nick} bermaksud mengatakan: ${result}`);
+  }
+});
+
+botan.respond('channel', /^(.*)$/, function(channel, message) {
+  if ((tracked_channels.indexOf(channel.name) >= 0) && !sub.test(message)) {
+    const time = Date.now();
+    const nick = channel.message.source.nick;
+    const current = last_message.findOne({ nick: nick });
+    if (current) {
+      current.time = time;
+      current.message = message;
+      last_message.update(current);
+    } else {
+      last_message.insert({ nick: nick, time: time, message: message });
+    }
+    db.saveDatabase();
+  }
+});
+
 botan.respond('private', /^\.raw +(.+)$/, function(user, raw) {
   const sender = user.name;
   botan.whois(sender, function(authname) {
@@ -144,8 +168,9 @@ botan.respond('private', /^\.quit( +(.+))?$/, function(user, opt, reason) {
   const sender = user.name
   botan.whois(sender, function(authname) {
     if (authname === env.ADMIN) {
-      console.log('BOTAN: admin,', sender, ', executing quit')
-      botan.quit(opt ? reason : `perintah ${user}`);
+      console.log('BOTAN: admin,', sender, ', executing quit');
+      const quit_message = opt ? reason : `perintah ${sender}`;
+      botan.quit(quit_message);
     }
   });
 });

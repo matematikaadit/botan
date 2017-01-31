@@ -22,7 +22,9 @@ Perintah dan Fitur
 .bantuan
 ```
 
-Link ke halaman ini. Alias: `.help`
+Link ke halaman ini.
+
+Alias: `.help`
 
 
 ### .ingat
@@ -71,7 +73,9 @@ Mencari tahu kapan seseorang terakhir terlihat di kanal. Contohnya:
 .kelihatan ChanServ
 ```
 
-Si botan akan menjawab dengan informasi waktu kapan terakhir nick tersebut terlihat di kanal.
+Si botan akan menjawab dengan informasi waktu kapan terakhir nick tersebut terlihat di kanal dan pesan yang dia ucapkan.
+
+Alias: `.keliatan`
 
 
 ### .bintang
